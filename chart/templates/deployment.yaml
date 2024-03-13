@@ -76,10 +76,38 @@ spec:
             {{ .Values.additionalPorts | toYaml | nindent 12 }}
             {{- end }}
           {{- if .Values.probes.enabled }}
+          {{- if .Values.probes.liveness.enabled }}
           livenessProbe:
-            {{- include "generic.probes" . | nindent 12 }}
+            httpGet:
+              path: {{ .Values.probes.liveness.options.path }}
+              port: {{ .Values.probes.liveness.options.port }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.liveness.successThreshold }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.probes.readiness.enabled }}
           readinessProbe:
-            {{- include "generic.probes" . | nindent 12 }}
+            httpGet:
+              path: {{ .Values.probes.readiness.options.path }}
+              port: {{ .Values.probes.readiness.options.port }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.readiness.successThreshold }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.probes.startup.enabled }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.probes.startup.options.path }}
+              port: {{ .Values.probes.startup.options.port }}
+            initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.startup.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.startup.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.startup.successThreshold }}
+            failureThreshold: {{ .Values.probes.startup.failureThreshold }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

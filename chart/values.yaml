@@ -72,20 +72,42 @@ service:
     externalTrafficPolicy: Cluster
 
 probes:
-  # Specifies whether or not to add probes to the deployment
   enabled: true
-  # Specify the probe type
-  type: httpGet
+  liveness:
+    enabled: true
+    type: httpGet
+    options:
+      path: /liveness
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
 
-  options:
-    path: /
-    port: http
+  readiness:
+    enabled: true
+    type: httpGet
+    options:
+      path: /readiness
+      port: http
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
 
-  initialDelaySeconds: 0
-  periodSeconds: 10
-  timeoutSeconds: 1
-  successThreshold: 1
-  failureThreshold: 1
+  startup:
+    enabled: true
+    type: httpGet
+    options:
+      path: /startup
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
 
 metrics:
   # If enabled, generates a ServiceMonitor for prometheus
